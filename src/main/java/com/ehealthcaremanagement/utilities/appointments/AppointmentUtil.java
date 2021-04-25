@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
+import java.util.Optional;
 
 public class AppointmentUtil {
 
@@ -23,6 +25,8 @@ public class AppointmentUtil {
     private final char slot;
     private final AppointmentRepository appointmentRepository;
     private final FindModel findModel;
+
+    private int patientNumber;
 
     /* Number of blocks to be adjusted for different patients and doctor types */
     /* All the constants here are for general physicians, for specialized doctors, double may be considered */
@@ -86,6 +90,8 @@ public class AppointmentUtil {
         BlocksModel blocksModel = findModel.findBlockModelOrCreate(doctor, date, slot);
         double totalTimeBlocks = (slot == 'M') ? doctor.getMorningBlocks() : doctor.getAfternoonBlocks();
 
+        this.patientNumber = blocksModel.getPatients() + 1;
+
         if((totalTimeBlocks - blocksModel.getBlocks()) < blocksRequired) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, " Sorry, slot already full");
         }
@@ -105,13 +111,39 @@ public class AppointmentUtil {
         }
     }
 
+    public void checkNoDuplicate() {
+        Optional<AppointmentModel> appointmentModelOptional
+                 = appointmentRepository.findByUserIdAndDoctorIdAndDateAndSlot(user, doctor, date, slot);
+
+        if(appointmentModelOptional.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Duplicate appointments not allowed");
+        }
+    }
+
+    public void checkFCFSRequirement(AppointmentModel appointmentModel) {
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        if(slot == 'M') {
+            if(currentTime.getHour() > 5) {
+                appointmentModel.setToken(this.patientNumber);
+            }
+        } else {
+            if(currentTime.getHour() > 10) {
+                appointmentModel.setToken(this.patientNumber);
+            }
+        }
+    }
+
     public AppointmentModel saveAppointment() {
         double blocksRequired = calculateBlocks();
         checkEmptyBlocks(blocksRequired);
+        checkNoDuplicate();
 
         AppointmentModel newAppointment = new AppointmentModel(
                 user, doctor, date, slot, blocksRequired
         );
+
+        checkFCFSRequirement(newAppointment);
 
         try {
             appointmentRepository.save(newAppointment);
@@ -124,5 +156,3 @@ public class AppointmentUtil {
         }
     }
 }
-
-//TODO Do not allow same person to get appointment in the same slot again

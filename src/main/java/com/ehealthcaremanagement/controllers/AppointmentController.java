@@ -6,16 +6,17 @@ import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.services.FindModel;
+import com.ehealthcaremanagement.utilities.appointments.AppointmentCancelUtil;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentUtil;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AppointmentController {
@@ -44,5 +45,28 @@ public class AppointmentController {
         );
 
         return appointmentUtil.saveAppointment();
+    }
+
+    @RequestMapping(value = "/appointment", method = RequestMethod.GET)
+    public @ResponseBody List<AppointmentModel> getAppointments(@RequestParam(name = "mode")Optional<Character> mode,
+                                                                Principal principal)
+            // Mode: null -> All, 'F' -> Future appointments, 'P' -> Past appointments
+    {
+        UserModel userModel = findModel.findUserModel(principal.getName());;
+        if(mode.isEmpty()) {
+            return appointmentRepository.findAllByUserId(userModel);
+        } else {
+            if(mode.get() == 'F')
+                return appointmentRepository.findAllByUserIdAndDateGreaterThanEqual(userModel, LocalDate.now());
+            return appointmentRepository.findAllByUserIdAndDateBefore(userModel, LocalDate.now());
+        }
+    }
+
+    @RequestMapping(value = "/appointment", method = RequestMethod.DELETE)
+    public @ResponseBody AppointmentModel cancelAppointment(@RequestParam(name = "id") long id, Principal principal) {
+        AppointmentCancelUtil appointmentCancelUtil =
+               new AppointmentCancelUtil(appointmentRepository, id, findModel.findUserModel(principal.getName()), findModel);
+
+        return appointmentCancelUtil.deleteAppointment();
     }
 }
