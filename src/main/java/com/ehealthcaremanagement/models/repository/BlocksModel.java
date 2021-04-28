@@ -26,12 +26,15 @@ public class BlocksModel {
     private double blocks;
     private int patients;
 
-    public BlocksModel(DoctorModel doctorModel, LocalDate date, char slot, double blocks, int patients) {
+    private int cancelled;
+
+    public BlocksModel(DoctorModel doctorModel, LocalDate date, char slot, double blocks, int patients, int cancelled) {
         this.doctorModel = doctorModel;
         this.date = date;
         this.slot = slot;
         this.blocks = blocks;
         this.patients = patients;
+        this.cancelled = cancelled;
     }
 
     public BlocksModel() {}
@@ -84,4 +87,11 @@ public class BlocksModel {
         this.patients = patients;
     }
 
+    public int getCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(int cancelled) {
+        this.cancelled = cancelled;
+    }
 }

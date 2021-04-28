@@ -31,6 +31,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/doctor/**").hasRole("DOC")
                 .antMatchers("/login-verify", "/register", "/register/**", "/info/**").permitAll()
                 .anyRequest()
                 .authenticated()

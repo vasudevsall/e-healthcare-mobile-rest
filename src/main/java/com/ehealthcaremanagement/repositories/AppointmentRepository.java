@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<AppointmentModel, Long> {
     Optional<AppointmentModel> findByUserIdAndDoctorIdAndDateAndSlot(UserModel userModel, DoctorModel doctorModel, LocalDate date, char slot);
+    Optional<AppointmentModel> findByDoctorIdAndDateAndSlotAndToken(DoctorModel doctorModel, LocalDate date, char slot, int token);
     List<AppointmentModel> findAllByDoctorIdAndDateAndSlot(DoctorModel doctorModel, LocalDate date, char slot);
     List<AppointmentModel> findAllByUserIdAndDateAndSlot(UserModel userModel, LocalDate date, char slot);
     List<AppointmentModel> findAllByUserIdAndDoctorIdAndDateAfter(UserModel userModel, DoctorModel doctorModel, LocalDate date);

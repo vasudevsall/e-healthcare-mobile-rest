@@ -76,6 +76,7 @@ public class AppointmentCancelUtil {
                 findModel.findBlockModel(appointmentModel.getDoctorId(), appointmentModel.getDate(), appointmentModel.getSlot());
 
         blocksModel.setBlocks(blocksModel.getBlocks() - appointmentModel.getBlocks());
+        blocksModel.setCancelled(blocksModel.getCancelled() + 1);
         findModel.saveBlocksModel(blocksModel);
         // Number of patients not reduces due to use of patient number in First Come First Serve
     }

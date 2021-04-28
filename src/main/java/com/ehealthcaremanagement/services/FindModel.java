@@ -53,7 +53,7 @@ public class FindModel {
         Optional<BlocksModel> blocksModelOptional =
                 blocksRepository.findByDoctorModelAndDateAndSlot(doctorModel, date, slot);
 
-        return blocksModelOptional.orElseGet(() -> new BlocksModel(doctorModel, date, slot, 0, 0));
+        return blocksModelOptional.orElseGet(() -> new BlocksModel(doctorModel, date, slot, 0, 0, 0));
     }
 
     public BlocksModel findBlockModelOrCreate(DoctorModel doctorModel, LocalDate date, char slot) {
