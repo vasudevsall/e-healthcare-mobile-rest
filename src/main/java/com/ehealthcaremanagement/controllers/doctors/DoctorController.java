@@ -1,7 +1,9 @@
 package com.ehealthcaremanagement.controllers.doctors;
 
 import com.ehealthcaremanagement.models.custom.AppointmentDetailsUpdateModel;
+import com.ehealthcaremanagement.models.custom.DoctorAnalysisModel;
 import com.ehealthcaremanagement.models.repository.*;
+import com.ehealthcaremanagement.services.DoctorAnalysisService;
 import com.ehealthcaremanagement.services.DoctorAppointmentService;
 import com.ehealthcaremanagement.services.FindModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/doctor")
@@ -21,6 +24,8 @@ public class DoctorController {
     private DoctorAppointmentService doctorAppointmentService;
     @Autowired
     private FindModel findModel;
+    @Autowired
+    private DoctorAnalysisService doctorAnalysisService;
 
     @RequestMapping(value = "/upcoming", method = RequestMethod.GET)
     public @ResponseBody BlocksModel getNextSlotDetails(Principal principal) {
@@ -52,5 +57,15 @@ public class DoctorController {
             @RequestBody AppointmentDetailsUpdateModel appointmentDetailsUpdateModel
     ) {
         return doctorAppointmentService.updateAppointmentDetails(appointmentDetailsUpdateModel);
+    }
+
+    @RequestMapping(value = "/analysis", method = RequestMethod.GET)
+    public @ResponseBody DoctorAnalysisModel getCompleteAnalysis(
+            @RequestParam(name = "days") Optional<Integer> days,
+            Principal principal
+    ) {
+        if(days.isEmpty())
+            return doctorAnalysisService.createDoctorAnalysis(principal, 30);
+        return doctorAnalysisService.createDoctorAnalysis(principal, days.get());
     }
 }
