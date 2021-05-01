@@ -7,6 +7,8 @@ import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.repositories.BlocksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class DoctorAnalysisService {
 
     @Autowired

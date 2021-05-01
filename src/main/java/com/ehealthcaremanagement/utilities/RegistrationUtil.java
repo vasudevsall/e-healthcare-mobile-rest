@@ -3,6 +3,8 @@ package com.ehealthcaremanagement.utilities;
 import com.ehealthcaremanagement.models.custom.PasswordChangeModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,6 +19,7 @@ public class RegistrationUtil {
     private final UserValidationUtil userValidation;
     private final Principal principal;
     private final PasswordChangeModel passwordChangeModel;
+    private final Logger logger = LoggerFactory.getLogger(RegistrationUtil.class);
 
     private UserModel userModel;
 
@@ -138,6 +141,7 @@ public class RegistrationUtil {
             userRepository.save(userModel);
             return true;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             return false;
         }
     }

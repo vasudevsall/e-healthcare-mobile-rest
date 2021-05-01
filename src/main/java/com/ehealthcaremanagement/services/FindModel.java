@@ -2,9 +2,11 @@ package com.ehealthcaremanagement.services;
 
 import com.ehealthcaremanagement.models.repository.BlocksModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
+import com.ehealthcaremanagement.models.repository.SpecialitiesModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.BlocksRepository;
 import com.ehealthcaremanagement.repositories.DoctorRepository;
+import com.ehealthcaremanagement.repositories.SpecialityRepository;
 import com.ehealthcaremanagement.repositories.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,9 @@ public class FindModel {
 
     @Autowired
     private BlocksRepository blocksRepository;
+
+    @Autowired
+    private SpecialityRepository specialityRepository;
 
     private final Logger logger = LoggerFactory.getLogger(FindModel.class);
 
@@ -71,5 +76,12 @@ public class FindModel {
             return false;
         }
         return true;
+    }
+
+    public SpecialitiesModel findSpecialitiesModel(String speciality){
+        Optional<SpecialitiesModel> specialitiesModel = specialityRepository.findById(speciality);
+        if(specialitiesModel.isPresent())
+            return specialitiesModel.get();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No speciality found: " + speciality);
     }
 }
