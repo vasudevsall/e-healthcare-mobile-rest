@@ -2,8 +2,10 @@ package com.ehealthcaremanagement.services;
 
 import com.ehealthcaremanagement.models.custom.DoctorAnalysisModel;
 import com.ehealthcaremanagement.models.custom.PatientFrequencyModel;
+import com.ehealthcaremanagement.models.repository.AdmissionModel;
 import com.ehealthcaremanagement.models.repository.BlocksModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
+import com.ehealthcaremanagement.repositories.AdmissionRepository;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.repositories.BlocksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class DoctorAnalysisService {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private BlocksRepository blocksRepository;
+    @Autowired
+    private AdmissionRepository admissionRepository;
 
     private DoctorModel doctorModel;
     private LocalDate date;
@@ -33,6 +37,12 @@ public class DoctorAnalysisService {
         this.doctorModel = findModel.findDoctorModel(principal.getName());
         findDate(days);
         List<BlocksModel> blocksModels = blocksRepository.findAllByDoctorModelAndDateAfter(doctorModel, date);
+        List<AdmissionModel> admissionModels = admissionRepository.findAllByDoctorAndAdmitAfterAndDischargeBefore(
+                doctorModel, date, LocalDate.now().plusDays(1)
+        );
+        List<AdmissionModel> admissionModelsCurrent = admissionRepository.findAllByDoctorAndAdmitAfterAndDischargeIsNull(
+                doctorModel, date
+        );
 
         int totalAppointments = 0;
         int cancelledAppointments = 0;
@@ -44,7 +54,21 @@ public class DoctorAnalysisService {
             totalAppointments += blocksModel.getPatients();
             cancelledAppointments += blocksModel.getCancelled();
         }
-        //TODO operations, patients Admitted and videoConsultations
+        for(AdmissionModel admissionModel: admissionModels) {
+            if(admissionModel.getRoom().getType() == 'O') {
+                operations++;
+                continue;
+            }
+            patientsAdmitted++;
+        }
+        for(AdmissionModel admissionModel: admissionModelsCurrent) {
+            if(admissionModel.getRoom().getType() == 'O') {
+                operations++;
+                continue;
+            }
+            patientsAdmitted++;
+        }
+        //TODO videoConsultations
 
         List<PatientFrequencyModel> regular = regularPatients();
 

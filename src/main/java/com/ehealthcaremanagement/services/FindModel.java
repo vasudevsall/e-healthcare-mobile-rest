@@ -1,13 +1,7 @@
 package com.ehealthcaremanagement.services;
 
-import com.ehealthcaremanagement.models.repository.BlocksModel;
-import com.ehealthcaremanagement.models.repository.DoctorModel;
-import com.ehealthcaremanagement.models.repository.SpecialitiesModel;
-import com.ehealthcaremanagement.models.repository.UserModel;
-import com.ehealthcaremanagement.repositories.BlocksRepository;
-import com.ehealthcaremanagement.repositories.DoctorRepository;
-import com.ehealthcaremanagement.repositories.SpecialityRepository;
-import com.ehealthcaremanagement.repositories.UserRepository;
+import com.ehealthcaremanagement.models.repository.*;
+import com.ehealthcaremanagement.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +26,9 @@ public class FindModel {
 
     @Autowired
     private SpecialityRepository specialityRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     private final Logger logger = LoggerFactory.getLogger(FindModel.class);
 
@@ -83,5 +80,12 @@ public class FindModel {
         if(specialitiesModel.isPresent())
             return specialitiesModel.get();
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No speciality found: " + speciality);
+    }
+
+    public RoomModel findRoomModel(long roomNo) {
+        Optional<RoomModel> roomModelOptional = roomRepository.findById(roomNo);
+        if(roomModelOptional.isPresent())
+            return roomModelOptional.get();
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room Number " + roomNo + " not found");
     }
 }

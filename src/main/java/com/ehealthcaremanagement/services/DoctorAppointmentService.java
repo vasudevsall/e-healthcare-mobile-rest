@@ -88,7 +88,7 @@ public class DoctorAppointmentService {
             return 'M';
         } else if(
                 currentTime.isAfter(getLocalDateTime(13, 59))
-                        && currentTime.isBefore(getLocalDateTime(21, 30))//TODO 21 - 17
+                        && currentTime.isBefore(getLocalDateTime(17, 30))
         ) {
             return 'A';
         }
