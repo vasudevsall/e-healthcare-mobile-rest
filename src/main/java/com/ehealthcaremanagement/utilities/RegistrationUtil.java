@@ -100,6 +100,9 @@ public class RegistrationUtil {
             userValidation.bloodGroupValidation(userModel.getBloodGroup());
             original.setBloodGroup(userModel.getBloodGroup());
         }
+        if(userModel.getProfile() != null) {
+            original.setProfile(userModel.getProfile());
+        }
 
         this.userModel = original;
         saveUser("", false, false);

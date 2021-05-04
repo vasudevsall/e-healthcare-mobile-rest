@@ -48,7 +48,9 @@ public class UserModel {
     @Column(name = "blood")
     private String bloodGroup;
 
-    public UserModel(String username, String password, String firstName, String lastName, char gender, LocalDate birthDate, String phoneNumber, String email, String roles, boolean active, String bloodGroup) {
+    private String profile;
+
+    public UserModel(String username, String password, String firstName, String lastName, char gender, LocalDate birthDate, String phoneNumber, String email, String roles, boolean active, String bloodGroup, String profile) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -60,6 +62,7 @@ public class UserModel {
         this.roles = roles;
         this.active = active;
         this.bloodGroup = bloodGroup;
+        this.profile = profile;
     }
 
     public UserModel(){}
@@ -158,5 +161,13 @@ public class UserModel {
 
     public void setBloodGroup(String bloodGroup) {
         this.bloodGroup = bloodGroup;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
     }
 }
