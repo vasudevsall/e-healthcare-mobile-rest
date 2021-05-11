@@ -85,7 +85,12 @@ public class AppointmentController {
         Optional<AppointmentDetailsModel> appointmentDetailsModelOptional =
                 appointmentDetailsRepository.findByAppointmentModel(appointmentModelOptional.get());
         if(appointmentDetailsModelOptional.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment Details not found");
+            return new AppointmentDetailsModel(
+                    appointmentModelOptional.get().getUserId(),
+                    appointmentModelOptional.get(),
+                    "No information available",
+                    null
+            );
         }
         return appointmentDetailsModelOptional.get();
     }
