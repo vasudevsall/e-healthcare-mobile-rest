@@ -1,17 +1,21 @@
 package com.ehealthcaremanagement.controllers;
 
 import com.ehealthcaremanagement.models.custom.AppointmentRequestModel;
+import com.ehealthcaremanagement.models.repository.AppointmentDetailsModel;
 import com.ehealthcaremanagement.models.repository.AppointmentModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
+import com.ehealthcaremanagement.repositories.AppointmentDetailsRepository;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.services.FindModel;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentCancelUtil;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentUtil;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -26,6 +30,8 @@ public class AppointmentController {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
+    @Autowired
+    private AppointmentDetailsRepository appointmentDetailsRepository;
 
     @RequestMapping(value = "/appointment", method = RequestMethod.POST)
     public @ResponseBody AppointmentModel scheduleAppointment(@RequestBody AppointmentRequestModel appointmentRequestModel,
@@ -68,5 +74,19 @@ public class AppointmentController {
                new AppointmentCancelUtil(appointmentRepository, id, findModel.findUserModel(principal.getName()), findModel);
 
         return appointmentCancelUtil.deleteAppointment();
+    }
+
+    @RequestMapping(value = "/appointment/details", method = RequestMethod.GET)
+    public @ResponseBody AppointmentDetailsModel getAppointmentDetails(@RequestParam(name = "id") long id) {
+        Optional<AppointmentModel> appointmentModelOptional = appointmentRepository.findById(id);
+        if(appointmentModelOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment Not Found");
+        }
+        Optional<AppointmentDetailsModel> appointmentDetailsModelOptional =
+                appointmentDetailsRepository.findByAppointmentModel(appointmentModelOptional.get());
+        if(appointmentDetailsModelOptional.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Appointment Details not found");
+        }
+        return appointmentDetailsModelOptional.get();
     }
 }

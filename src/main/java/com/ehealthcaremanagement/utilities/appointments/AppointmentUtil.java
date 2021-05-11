@@ -124,11 +124,11 @@ public class AppointmentUtil {
         LocalDateTime currentTime = LocalDateTime.now();
 
         if(slot == 'M') {
-            if(currentTime.getHour() > 5) {
+            if(currentTime.getHour() > 5 && appointmentModel.getDate().equals(LocalDate.now())) {
                 appointmentModel.setToken(this.patientNumber);
             }
         } else {
-            if(currentTime.getHour() > 10) {
+            if(currentTime.getHour() > 10 && appointmentModel.getDate().equals(LocalDate.now())) {
                 appointmentModel.setToken(this.patientNumber);
             }
         }
