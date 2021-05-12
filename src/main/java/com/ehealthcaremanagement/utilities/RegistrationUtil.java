@@ -83,7 +83,7 @@ public class RegistrationUtil {
         }
         if(userModel.getLastName() != null) {
             userValidation.nameValidation(userModel.getLastName());
-            original.setFirstName(userModel.getLastName());
+            original.setLastName(userModel.getLastName());
         }
         if(userModel.getEmail() != null) {
             userValidation.emailValidation(userModel.getEmail());
