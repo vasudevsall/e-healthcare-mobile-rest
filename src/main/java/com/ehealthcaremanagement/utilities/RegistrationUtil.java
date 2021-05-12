@@ -96,6 +96,10 @@ public class RegistrationUtil {
         if(userModel.getBirthDate() != null) {
             original.setBirthDate(userModel.getBirthDate());
         }
+        if(userModel.getGender() != ' ') {
+            userValidation.genderValidation(userModel.getGender());
+            original.setGender(userModel.getGender());
+        }
         if(userModel.getBloodGroup() != null) {
             userValidation.bloodGroupValidation(userModel.getBloodGroup());
             original.setBloodGroup(userModel.getBloodGroup());
