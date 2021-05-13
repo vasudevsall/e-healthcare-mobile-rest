@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,13 +30,11 @@ public class DoctorController {
     public @ResponseBody BlocksModel getNextSlotDetails(Principal principal) {
         LocalDateTime localDateTime = LocalDateTime.now();
         DoctorModel doctorModel = findModel.findDoctorModel(principal.getName());
-        if(localDateTime.getHour() <= 9) {
+        if(localDateTime.getHour() <= 12) {
             return findModel.findBlockModel(doctorModel, LocalDate.now(), 'M');
-        } else if (localDateTime.getHour() <= 14) {
+        } else if (localDateTime.getHour() <= 17) {
             return findModel.findBlockModel(doctorModel, LocalDate.now(), 'A');
         }
-        if(LocalDate.now().getDayOfWeek() == DayOfWeek.SATURDAY)
-            return findModel.findBlockModel(doctorModel, LocalDate.now().plusDays(2), 'M');
         return findModel.findBlockModel(doctorModel, LocalDate.now().plusDays(1), 'M');
     }
 
