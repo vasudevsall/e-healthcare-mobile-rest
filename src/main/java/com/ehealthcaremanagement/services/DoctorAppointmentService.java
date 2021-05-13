@@ -39,7 +39,7 @@ public class DoctorAppointmentService {
         char slot = getSlot();
 
         List<AppointmentModel> appointmentModels = appointmentRepository.findAllByDoctorIdAndDateAndSlot(
-                doctorModel, LocalDate.now().plusDays(1), slot//TODO REmove plus Days
+                doctorModel, LocalDate.now(), slot
         );
 
         List<AppointmentDetailsModel> appointmentDetailsModels =
@@ -53,7 +53,7 @@ public class DoctorAppointmentService {
                     .getToken();
         }
 
-        BlocksModel blocksModel = findModel.findBlockModel(doctorModel, LocalDate.now().plusDays(1), slot);//TODO Remove plus Days
+        BlocksModel blocksModel = findModel.findBlockModel(doctorModel, LocalDate.now(), slot);
         if(lastToken == blocksModel.getPatients()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No more patients");
         }
@@ -84,7 +84,7 @@ public class DoctorAppointmentService {
         // Get the current time slot
         // If current time does not lie in any of the time slot then throw an error
         LocalDateTime currentTime = LocalDateTime.now();
-        if(currentTime.isAfter(getLocalDateTime(8, 59)) && currentTime.isBefore(getLocalDateTime(23, 59))) {//TODO 13 00
+        if(currentTime.isAfter(getLocalDateTime(8, 59)) && currentTime.isBefore(getLocalDateTime(13, 0))) {
             return 'M';
         } else if(
                 currentTime.isAfter(getLocalDateTime(13, 59))
@@ -101,7 +101,7 @@ public class DoctorAppointmentService {
     private AppointmentModel getNextAppointment(DoctorModel doctorModel, char slot, int lastToken) {
         Optional<AppointmentModel> appointmentModelOptional =
                 appointmentRepository.findByDoctorIdAndDateAndSlotAndToken(
-                        doctorModel, LocalDate.now().plusDays(1), slot, lastToken + 1 // TODO: remove plus days
+                        doctorModel, LocalDate.now(), slot, lastToken + 1
                 );
 
         if(appointmentModelOptional.isEmpty())
