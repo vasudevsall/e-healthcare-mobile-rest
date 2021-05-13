@@ -84,7 +84,7 @@ public class DoctorAppointmentService {
         // Get the current time slot
         // If current time does not lie in any of the time slot then throw an error
         LocalDateTime currentTime = LocalDateTime.now();
-        if(currentTime.isAfter(getLocalDateTime(8, 59)) && currentTime.isBefore(getLocalDateTime(23, 30))) {//TODO 13 00
+        if(currentTime.isAfter(getLocalDateTime(8, 59)) && currentTime.isBefore(getLocalDateTime(23, 59))) {//TODO 13 00
             return 'M';
         } else if(
                 currentTime.isAfter(getLocalDateTime(13, 59))
