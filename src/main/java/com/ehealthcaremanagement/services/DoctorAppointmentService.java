@@ -111,7 +111,7 @@ public class DoctorAppointmentService {
     }
 
     private LocalDateTime getLocalDateTime(int hours, int minutes) {
-        LocalDate currentDate = LocalDate.now().plusDays(1);//TODO Remove plus days
+        LocalDate currentDate = LocalDate.now();
         LocalTime time = LocalTime.of(hours, minutes);
         return LocalDateTime.of(currentDate, time);
     }
