@@ -39,7 +39,7 @@ public class DoctorAppointmentService {
         char slot = getSlot();
 
         List<AppointmentModel> appointmentModels = appointmentRepository.findAllByDoctorIdAndDateAndSlot(
-                doctorModel, LocalDate.now(), slot
+                doctorModel, LocalDate.now().plusDays(1), slot//TODO REmove plus Days
         );
 
         List<AppointmentDetailsModel> appointmentDetailsModels =
@@ -53,7 +53,7 @@ public class DoctorAppointmentService {
                     .getToken();
         }
 
-        BlocksModel blocksModel = findModel.findBlockModel(doctorModel, LocalDate.now(), slot);
+        BlocksModel blocksModel = findModel.findBlockModel(doctorModel, LocalDate.now().plusDays(1), slot);//TODO Remove plus Days
         if(lastToken == blocksModel.getPatients()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No more patients");
         }
