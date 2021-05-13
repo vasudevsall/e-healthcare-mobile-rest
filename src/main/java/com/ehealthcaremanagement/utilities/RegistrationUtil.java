@@ -96,7 +96,7 @@ public class RegistrationUtil {
         if(userModel.getBirthDate() != null) {
             original.setBirthDate(userModel.getBirthDate());
         }
-        if(userModel.getGender() != ' ') {
+        if(userModel.getGender() != '\0') {
             userValidation.genderValidation(userModel.getGender());
             original.setGender(userModel.getGender());
         }
