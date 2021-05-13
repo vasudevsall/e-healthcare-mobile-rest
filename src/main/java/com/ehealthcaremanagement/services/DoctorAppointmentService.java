@@ -37,7 +37,6 @@ public class DoctorAppointmentService {
 
         DoctorModel doctorModel = findModel.findDoctorModel(principal.getName());
         char slot = getSlot();
-        logger.info("Slot = " + slot);
 
         List<AppointmentModel> appointmentModels = appointmentRepository.findAllByDoctorIdAndDateAndSlot(
                 doctorModel, LocalDate.now(), slot
@@ -45,7 +44,6 @@ public class DoctorAppointmentService {
 
         List<AppointmentDetailsModel> appointmentDetailsModels =
                 appointmentDetailsRepository.findAllByAppointmentModelInOrderByIdAsc(appointmentModels);
-        logger.info(appointmentDetailsModels.toString());
 
         int lastToken = 0;
         if(appointmentDetailsModels.size() > 0) {
@@ -54,7 +52,6 @@ public class DoctorAppointmentService {
                     .getAppointmentModel()
                     .getToken();
         }
-        logger.info("Last Token = " + lastToken);
 
         BlocksModel blocksModel = findModel.findBlockModel(doctorModel, LocalDate.now(), slot);
         if(lastToken == blocksModel.getPatients()) {
@@ -104,7 +101,7 @@ public class DoctorAppointmentService {
     private AppointmentModel getNextAppointment(DoctorModel doctorModel, char slot, int lastToken) {
         Optional<AppointmentModel> appointmentModelOptional =
                 appointmentRepository.findByDoctorIdAndDateAndSlotAndToken(
-                        doctorModel, LocalDate.now(), slot, lastToken + 1
+                        doctorModel, LocalDate.now().plusDays(1), slot, lastToken + 1 // TODO: remove plus days
                 );
 
         if(appointmentModelOptional.isEmpty())
