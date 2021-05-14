@@ -20,6 +20,7 @@ public interface AppointmentRepository extends JpaRepository<AppointmentModel, L
     List<AppointmentModel> findAllByUserId(UserModel userModel);
     List<AppointmentModel> findAllByUserIdAndDateGreaterThanEqual(UserModel userModel, LocalDate date);
     List<AppointmentModel> findAllByUserIdAndDateBefore(UserModel userModel, LocalDate date);
+    List<AppointmentModel> findAllByDoctorIdAndDateGreaterThanEqualAndType(DoctorModel doctorModel, LocalDate localDate, char type);
 
     @Query("SELECT " +
             "new com.ehealthcaremanagement.models.custom.PatientFrequencyModel(COUNT(userId), userId)" +

@@ -3,6 +3,7 @@ package com.ehealthcaremanagement.services;
 import com.ehealthcaremanagement.models.custom.DoctorAnalysisModel;
 import com.ehealthcaremanagement.models.custom.PatientFrequencyModel;
 import com.ehealthcaremanagement.models.repository.AdmissionModel;
+import com.ehealthcaremanagement.models.repository.AppointmentModel;
 import com.ehealthcaremanagement.models.repository.BlocksModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.repositories.AdmissionRepository;
@@ -43,12 +44,15 @@ public class DoctorAnalysisService {
         List<AdmissionModel> admissionModelsCurrent = admissionRepository.findAllByDoctorAndAdmitAfterAndDischargeIsNull(
                 doctorModel, date
         );
+        List<AppointmentModel> videoAppointmentModels = appointmentRepository.findAllByDoctorIdAndDateGreaterThanEqualAndType(
+                doctorModel, date, 'V'
+        );
 
         int totalAppointments = 0;
         int cancelledAppointments = 0;
         int operations = 0;
         int patientsAdmitted = 0;
-        int videoConsultations = 0;
+        int videoConsultations = videoAppointmentModels.size();
 
         for(BlocksModel blocksModel: blocksModels) {
             totalAppointments += blocksModel.getPatients();
@@ -68,7 +72,6 @@ public class DoctorAnalysisService {
             }
             patientsAdmitted++;
         }
-        //TODO videoConsultations
 
         List<PatientFrequencyModel> regular = regularPatients();
 
