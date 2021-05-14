@@ -1,5 +1,6 @@
 package com.ehealthcaremanagement.models.repository;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,7 +14,8 @@ public class RoomModel {
 
     private int floor;
     private int beds;
-    private int max;
+    @Column(name = "max")
+    private int total;
     private char type;
     private double price;
 
@@ -21,7 +23,7 @@ public class RoomModel {
         this.id = id;
         this.floor = floor;
         this.beds = beds;
-        this.max = max;
+        this.total = max;
         this.type = type;
         this.price = price;
     }
@@ -51,12 +53,12 @@ public class RoomModel {
         this.beds = beds;
     }
 
-    public int getMax() {
-        return max;
+    public int getTotal() {
+        return total;
     }
 
-    public void setMax(int max) {
-        this.max = max;
+    public void setTotal(int max) {
+        this.total = max;
     }
 
     public char getType() {

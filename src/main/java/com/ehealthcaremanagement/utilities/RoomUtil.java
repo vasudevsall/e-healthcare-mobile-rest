@@ -29,7 +29,7 @@ public class RoomUtil {
         if(roomModel.getType() != 'W' || roomModel.getType() != 'I' || roomModel.getType() != 'O')
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid room type");
 
-        if(roomModel.getBeds() > roomModel.getMax())
+        if(roomModel.getBeds() > roomModel.getTotal())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Total number of rooms cannot be less than available rooms");
 
         if(roomModel.getPrice() < 0.0)

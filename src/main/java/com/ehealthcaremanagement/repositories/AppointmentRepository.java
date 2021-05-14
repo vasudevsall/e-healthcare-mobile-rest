@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AppointmentRepository extends JpaRepository<AppointmentModel, Long> {
@@ -27,4 +28,13 @@ public interface AppointmentRepository extends JpaRepository<AppointmentModel, L
             " FROM AppointmentModel WHERE doctorId=?1 AND date > ?2" +
             " GROUP BY userId ORDER BY COUNT(userId) DESC")
     List<PatientFrequencyModel> findRegularPatients(DoctorModel doctorModel, LocalDate date);
+
+    @Query("SELECT " +
+            "type, COUNT(type) FROM AppointmentModel  GROUP BY type")
+    List<Object[]> findAllAppointmentType();
+
+    @Query("select " +
+            "count(date), date from AppointmentModel where date>?1" +
+            " group by date")
+    List<Object[]> findDailyCount(LocalDate date);
 }
