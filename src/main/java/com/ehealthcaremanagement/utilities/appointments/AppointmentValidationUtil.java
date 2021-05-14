@@ -18,6 +18,7 @@ public class AppointmentValidationUtil {
     private final String doctorUsername;
     private final LocalDate date;
     private final char slot;
+    private final char type;
 
     public AppointmentValidationUtil(FindModel findModel, String userUsername, AppointmentRequestModel appointmentRequestModel) {
         this.findModel = findModel;
@@ -25,6 +26,7 @@ public class AppointmentValidationUtil {
         this.doctorUsername = appointmentRequestModel.getDoctorUsername();
         this.date = appointmentRequestModel.getDate();
         this.slot = appointmentRequestModel.getSlot();
+        this.type = appointmentRequestModel.getType();
     }
 
     public boolean validateUser() {
@@ -67,7 +69,14 @@ public class AppointmentValidationUtil {
         return true;
     }
 
+    public boolean validateType() {
+        if(type != 'O' && type!='V') {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid appointment type: " + type);
+        }
+        return true;
+    }
+
     public boolean validateAll() {
-        return validateUser() && validateDoctor() && validateDate() && validateSlot();
+        return validateUser() && validateDoctor() && validateDate() && validateSlot() && validateType();
     }
 }

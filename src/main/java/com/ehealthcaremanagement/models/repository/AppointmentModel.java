@@ -24,13 +24,15 @@ public class AppointmentModel {
 
     private LocalDate date;
     private char slot;
+    private char type;
     private double blocks;
     private int token;
 
-    public AppointmentModel(UserModel userId, DoctorModel doctorId, LocalDate date, char slot, double blocks) {
+    public AppointmentModel(UserModel userId, DoctorModel doctorId, LocalDate date, char slot, char type, double blocks) {
         this.userId = userId;
         this.doctorId = doctorId;
         this.date = date;
+        this.type = type;
         this.slot = slot;
         this.blocks = blocks;
     }
@@ -79,6 +81,14 @@ public class AppointmentModel {
 
     public double getBlocks() {
         return blocks;
+    }
+
+    public char getType() {
+        return type;
+    }
+
+    public void setType(char type) {
+        this.type = type;
     }
 
     public void setBlocks(double blocks) {

@@ -23,6 +23,7 @@ public class AppointmentUtil {
     private final DoctorModel doctor;
     private final LocalDate date;
     private final char slot;
+    private final char type;
     private final AppointmentRepository appointmentRepository;
     private final FindModel findModel;
 
@@ -40,13 +41,14 @@ public class AppointmentUtil {
     private static final Logger log = LoggerFactory.getLogger(AppointmentUtil.class);
 
     public AppointmentUtil(UserModel user, DoctorModel doctor, LocalDate date,
-                           char slot, AppointmentRepository appointmentRepository,
+                           char slot, char type, AppointmentRepository appointmentRepository,
                            FindModel findModel)
     {
         this.user = user;
         this.doctor = doctor;
         this.date = date;
         this.slot = slot;
+        this.type = type;
         this.appointmentRepository = appointmentRepository;
         this.findModel = findModel;
     }
@@ -140,7 +142,7 @@ public class AppointmentUtil {
         checkNoDuplicate();
 
         AppointmentModel newAppointment = new AppointmentModel(
-                user, doctor, date, slot, blocksRequired
+                user, doctor, date, slot, type, blocksRequired
         );
 
         checkFCFSRequirement(newAppointment);

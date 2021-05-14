@@ -47,7 +47,7 @@ public class AppointmentController {
 
         AppointmentUtil appointmentUtil = new AppointmentUtil(
                 userModel, doctorModel, appointmentRequestModel.getDate(), appointmentRequestModel.getSlot(),
-                appointmentRepository, findModel
+                appointmentRequestModel.getType() ,appointmentRepository, findModel
         );
 
         return appointmentUtil.saveAppointment();

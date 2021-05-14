@@ -7,11 +7,13 @@ public class AppointmentRequestModel {
     private String doctorUsername;
     private LocalDate date;
     private char slot;
+    private char type;
 
-    public AppointmentRequestModel(String doctorUsername, LocalDate date, char slot) {
+    public AppointmentRequestModel(String doctorUsername, LocalDate date, char slot, char type) {
         this.doctorUsername = doctorUsername;
         this.date = date;
         this.slot = slot;
+        this.type = type;
     }
 
     public AppointmentRequestModel() {}
@@ -38,5 +40,13 @@ public class AppointmentRequestModel {
 
     public void setSlot(char slot) {
         this.slot = slot;
+    }
+
+    public char getType() {
+        return type;
+    }
+
+    public void setType(char type) {
+        this.type = type;
     }
 }
