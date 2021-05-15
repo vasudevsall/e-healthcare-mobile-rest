@@ -26,7 +26,7 @@ public class RoomUtil {
         if(roomModelOptional.isPresent())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room Number already exists: " + roomModel.getId());
 
-        if(roomModel.getType() != 'W' || roomModel.getType() != 'I' || roomModel.getType() != 'O')
+        if(roomModel.getType() != 'W' && roomModel.getType() != 'I' && roomModel.getType() != 'O')
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid room type");
 
         if(roomModel.getBeds() > roomModel.getTotal())
