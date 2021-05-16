@@ -1,11 +1,13 @@
 package com.ehealthcaremanagement.controllers.manager;
 
+import com.ehealthcaremanagement.models.custom.DoctorAnalysisModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.models.repository.SpecialitiesModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.DoctorRepository;
 import com.ehealthcaremanagement.repositories.SpecialityRepository;
 import com.ehealthcaremanagement.repositories.UserRepository;
+import com.ehealthcaremanagement.services.DoctorAnalysisService;
 import com.ehealthcaremanagement.services.FindModel;
 import com.ehealthcaremanagement.utilities.RegistrationUtil;
 import org.slf4j.Logger;
@@ -14,13 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @Controller
 @RequestMapping(value = "/manager")
@@ -37,6 +37,8 @@ public class ManageDocController {
     private FindModel findModel;
     @Autowired
     private SpecialityRepository specialityRepository;
+    @Autowired
+    private DoctorAnalysisService doctorAnalysisService;
 
     private final Logger logger = LoggerFactory.getLogger(ManageDocController.class);
 
@@ -69,9 +71,14 @@ public class ManageDocController {
     }
 
     @RequestMapping(value = "/doctor", method = RequestMethod.GET)
-    public @ResponseBody DoctorModel getDoctorDetails() {
-        //TODO Just a method stub
-        return new DoctorModel();
+    public @ResponseBody DoctorAnalysisModel getDoctorDetails(
+            @RequestParam(name = "username") String username,
+            @RequestParam(name = "days") Optional<Integer> days
+    )
+    {
+        if(days.isEmpty())
+            return doctorAnalysisService.createDoctorAnalysis(username, 30);
+        return doctorAnalysisService.createDoctorAnalysis(username, days.get());
     }
 
 }

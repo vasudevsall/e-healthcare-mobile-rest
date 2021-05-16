@@ -62,7 +62,7 @@ public class DoctorController {
             Principal principal
     ) {
         if(days.isEmpty())
-            return doctorAnalysisService.createDoctorAnalysis(principal, 30);
-        return doctorAnalysisService.createDoctorAnalysis(principal, days.get());
+            return doctorAnalysisService.createDoctorAnalysis(principal.getName(), 30);
+        return doctorAnalysisService.createDoctorAnalysis(principal.getName(), days.get());
     }
 }

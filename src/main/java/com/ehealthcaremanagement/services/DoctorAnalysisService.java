@@ -34,8 +34,8 @@ public class DoctorAnalysisService {
     private DoctorModel doctorModel;
     private LocalDate date;
 
-    public DoctorAnalysisModel createDoctorAnalysis(Principal principal, int days) {
-        this.doctorModel = findModel.findDoctorModel(principal.getName());
+    public DoctorAnalysisModel createDoctorAnalysis(String username, int days) {
+        this.doctorModel = findModel.findDoctorModel(username);
         findDate(days);
         List<BlocksModel> blocksModels = blocksRepository.findAllByDoctorModelAndDateAfter(doctorModel, date);
         List<AdmissionModel> admissionModels = admissionRepository.findAllByDoctorAndAdmitAfterAndDischargeBefore(
