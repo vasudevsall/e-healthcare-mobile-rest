@@ -15,7 +15,7 @@ public class UserValidationUtil {
     private final List<Character> GENDERS = Arrays.asList('F', 'M', 'O', 'f', 'm', 'o');
     private final List<String> BLOOD_GROUPS = Arrays.asList("A+", "B+", "AB+", "O+", "A-", "B-", "AB-", "O-");
 
-    UserValidationUtil(UserRepository userRepository) {
+    public UserValidationUtil(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
