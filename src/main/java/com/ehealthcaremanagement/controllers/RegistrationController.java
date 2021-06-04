@@ -51,7 +51,10 @@ public class RegistrationController {
         boolean status = registrationUtil.saveUser("ROLE_USER", true, true);
         if(status) {
             try {
-                emailService.sendWelcomeMail(user.getEmail(), user.getFirstName(), user.getUsername());
+                emailService.sendWelcomeMail(
+                        user.getEmail(), user.getFirstName(),
+                        user.getUsername(),"", false, false
+                );
             } catch (Exception e) {
                 logger.error("Unable to send mail on registration username: " + user.getEmail());
                 logger.error(e.getMessage());

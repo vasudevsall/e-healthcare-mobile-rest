@@ -2,6 +2,8 @@ package com.ehealthcaremanagement.controllers.manager;
 
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.UserRepository;
+import com.ehealthcaremanagement.services.EmailSenderService;
+import com.ehealthcaremanagement.services.PassGenerator;
 import com.ehealthcaremanagement.services.manager.ManagerUserService;
 import com.ehealthcaremanagement.utilities.RegistrationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class ManagePatientController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailSenderService emailService;
+
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public @ResponseBody List<UserModel> findUser(
             @RequestParam(name = "mode") Optional<String> mode,
@@ -45,16 +50,18 @@ public class ManagePatientController {
 
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public @ResponseBody String addUser(@RequestBody UserModel user, HttpServletResponse response) {
-        user.setPassword(user.getUsername() + user.getPhoneNumber().substring(0, 5) + "@");
+        String password = PassGenerator.generatePassword();
+        user.setPassword(password);
         RegistrationUtil registrationUtil = new RegistrationUtil(user, passwordEncoder, userRepository, null);
         registrationUtil.validateDetails();
         boolean status = registrationUtil.saveUser("ROLE_USER", true, true);
-        if(status) {
+        try {
+            emailService.sendWelcomeMail(user.getEmail(), user.getFirstName(), user.getUsername(),
+                    password, false, true
+            );
             return "Registration success";
-        } else{
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return "Registration failed";
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to register at the momemt");
         }
-        //TODO send messages to newly registered patient with username and password
     }
 }

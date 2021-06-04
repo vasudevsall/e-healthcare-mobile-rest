@@ -1,5 +1,6 @@
 package com.ehealthcaremanagement.services;
 
+import com.ehealthcaremanagement.models.repository.AppointmentModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.config.ConfigTreeConfigDataLoader;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,18 +32,19 @@ public class EmailSenderService {
         mailSender.send(message);
     }
 
-    public void sendWelcomeMail(String toEmail, String name, String username) throws MessagingException {
+    public void sendWelcomeMail(String toEmail, String name, String username, String password,
+                                boolean isDoctor, boolean isDefaultPass) throws MessagingException
+    {
         Context context = new Context();
         context.setVariable("name", name);
         context.setVariable("username", username);
+        context.setVariable("doctor", isDoctor);
+        context.setVariable("password", password);
+        context.setVariable("defaultPass", isDefaultPass);
 
         String process = templateEngine.process("welcome", context);
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject("Welcome to E-Healthcare, " + name);
-        helper.setText(process, true);
-        helper.setTo(toEmail);
-        mailSender.send(mimeMessage);
+
+        htmlMailSender(toEmail, process, "Welcome to E-Healthcare, " + name);
     }
 
     public void sendOtpMail(String toEmail, String name, String username, int otp) throws MessagingException {
@@ -52,12 +54,8 @@ public class EmailSenderService {
         context.setVariable("otp", otp);
 
         String process = templateEngine.process("otp", context);
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject("Forgot Password");
-        helper.setText(process, true);
-        helper.setTo(toEmail);
-        mailSender.send(mimeMessage);
+
+        htmlMailSender(toEmail, process, "OTP for resetting password");
     }
 
     public void sendPasswordChangeMail(String toEmail, String name, String username) throws MessagingException {
@@ -66,9 +64,25 @@ public class EmailSenderService {
         context.setVariable("username", username);
 
         String process = templateEngine.process("password-change", context);
+
+        htmlMailSender(toEmail, process, "Password Changed");
+    }
+
+    public void sendAppointmentEmail(AppointmentModel appointmentModel, boolean isTokenGeneration) throws MessagingException {
+        String subject = (isTokenGeneration)?"Appointment Remainder":"Appointment Scheduled";
+        Context context = new Context();
+        context.setVariable("appointment", appointmentModel);
+        context.setVariable("isTokenGeneration", isTokenGeneration);
+
+        String process = templateEngine.process("appointment", context);
+        htmlMailSender(appointmentModel.getUserId().getEmail(), process, subject);
+    }
+
+    // Private Methods
+    private void htmlMailSender(String toEmail, String process, String subject) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        helper.setSubject("Password Changed");
+        helper.setSubject(subject);
         helper.setText(process, true);
         helper.setTo(toEmail);
         mailSender.send(mimeMessage);

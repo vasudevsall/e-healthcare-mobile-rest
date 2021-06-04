@@ -7,6 +7,7 @@ import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.AppointmentDetailsRepository;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
+import com.ehealthcaremanagement.services.EmailSenderService;
 import com.ehealthcaremanagement.services.FindModel;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentCancelUtil;
 import com.ehealthcaremanagement.utilities.appointments.AppointmentUtil;
@@ -32,6 +33,8 @@ public class AppointmentController {
     private AppointmentRepository appointmentRepository;
     @Autowired
     private AppointmentDetailsRepository appointmentDetailsRepository;
+    @Autowired
+    private EmailSenderService emailService;
 
     @RequestMapping(value = "/appointment", method = RequestMethod.POST)
     public @ResponseBody AppointmentModel scheduleAppointment(@RequestBody AppointmentRequestModel appointmentRequestModel,
@@ -50,7 +53,13 @@ public class AppointmentController {
                 appointmentRequestModel.getType() ,appointmentRepository, findModel
         );
 
-        return appointmentUtil.saveAppointment();
+        AppointmentModel appointmentModel =  appointmentUtil.saveAppointment();
+        try {
+            emailService.sendAppointmentEmail(appointmentModel, false);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot schedule appointment at the moment!");
+        }
+        return appointmentModel;
     }
 
     @RequestMapping(value = "/appointment", method = RequestMethod.GET)

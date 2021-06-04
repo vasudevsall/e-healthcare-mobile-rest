@@ -34,7 +34,7 @@ public class ManagerAnalysisController {
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public @ResponseBody String testMethod() {
         try {
-            emailService.sendWelcomeMail("ehealthcare8278338@gmail.com", "Vasudev", "vasudevsall");
+            emailService.sendAppointmentEmail(appointmentRepository.getOne(22L), false);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot send mail");
         }

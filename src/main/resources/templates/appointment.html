@@ -44,7 +44,7 @@
     }
 
     p {
-      font-family: "Arial",serif;
+      font-family: 'Arial', sans-serif;
       font-size: 16px;
       color: #16697aee;
     }
@@ -56,6 +56,19 @@
     a {
       text-decoration: none;
     }
+
+    table {
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      color: #16697aee;
+    }
+    table tr {
+      border: 1px solid #16697a;
+    }
+    table tr td {
+      border: 1px solid #16697a;
+      padding: 5px;
+    }
   </style>
 </head>
 <body>
@@ -63,11 +76,42 @@
     <img src="https://firebasestorage.googleapis.com/v0/b/e-healthcare-78554.appspot.com/o/logo.png?alt=media&token=67e47d1e-7008-4286-b470-69de0c651e7e" alt="Logo">
   </div>
   <div class="content">
-    <p>Dear <b th:text="${name}"></b></p>
     <p>
-      Password changed for your account associated with username: <b th:text="${username}"></b>.
-      If it was not you, write to us immediately at <a href="mailto:ehealthcare8278@gmail.com"><i>ehealthcare8278@gmail.com</i></a>
+      Dear <span th:text="${appointment.userId.firstName}"></span>,
     </p>
+    <p>
+      Your appointment with Dr. <span th:text="${appointment.doctorId.userId.firstName}"></span> has been scheduled on
+      <span th:text="${#temporals.format(appointment.date, 'dd-MM-yyyy')}"></span>. Please check the details below:
+    </p>
+    <table>
+      <tr>
+        <td>Doctor Name: </td>
+        <td>
+          Dr. <span th:text="${appointment.doctorId.userId.firstName}"></span>
+          <span th:text="${appointment.doctorId.userId.lastName}"></span>
+        </td>
+      </tr>
+      <tr>
+        <td>Doctor Username: </td>
+        <td th:text="${appointment.doctorId.userId.username}"></td>
+      </tr>
+      <tr>
+        <td>Date: </td>
+        <td th:text="${#temporals.format(appointment.date, 'dd-MM-yyyy')}"></td>
+      </tr>
+      <tr>
+        <td>Appointment Slot: </td>
+        <td th:text="${appointment.slot == 'M'}?'Morning':'Afternoon'"></td>
+      </tr>
+      <tr>
+        <td>Appointment Type: </td>
+        <td th:text="${appointment.type == 'O'}?'Offline':'Video'"></td>
+      </tr>
+      <tr th:if="${isTokenGeneration}">
+        <td>Token Number: </td>
+        <td th:text="${appointment.token}"></td>
+      </tr>
+    </table>
   </div>
   <div class="footer">
     <p>For any queries, mail us at: <a href="mailto:ehealthcare8278@gmail.com"><i>e-Healthcare</i></a></p>

@@ -14,9 +14,11 @@ public class PassGenerator {
         String password = "";
         Random random = new Random();
 
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<8; i++) {
             password = password + values.charAt(random.nextInt(values.length()));
         }
+        password += NUMBERS.charAt(random.nextInt(NUMBERS.length()));
+        password += SYMBOLS.charAt(random.nextInt(SYMBOLS.length()));
 
         return password;
     }

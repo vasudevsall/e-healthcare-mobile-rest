@@ -149,7 +149,7 @@ public class RegistrationUtil {
             return true;
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return false;
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to register at the moment");
         }
     }
 }

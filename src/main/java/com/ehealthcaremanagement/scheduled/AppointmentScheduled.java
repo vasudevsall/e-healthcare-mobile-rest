@@ -5,6 +5,9 @@ import com.ehealthcaremanagement.models.repository.AppointmentModel;
 import com.ehealthcaremanagement.models.repository.DoctorModel;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.repositories.DoctorRepository;
+import com.ehealthcaremanagement.services.EmailSenderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +27,11 @@ public class AppointmentScheduled {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    @Autowired
+    private EmailSenderService emailService;
+
+    private final Logger logger = LoggerFactory.getLogger(AppointmentScheduled.class);
+
     @Scheduled(cron = "0 30 5,10 * * *", zone = "IST")
     public void generateAppointmentToken() {
         // Shortest Job First scheduling algo, for minimum average waiting time
@@ -38,7 +46,7 @@ public class AppointmentScheduled {
             generateTokenNumbers(appointmentModels);
         }
 
-        // TODO: send notification and messages for token number
+        // TODO: send notification for token number
     }
 
     @Async
@@ -48,6 +56,11 @@ public class AppointmentScheduled {
         for(int index = 0; index<appointmentModels.size(); index++) {
             appointmentModels.get(index).setToken(index + 1);
             appointmentRepository.save(appointmentModels.get(index));
+            try {
+                emailService.sendAppointmentEmail(appointmentModels.get(index), true);
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
         }
     }
 }

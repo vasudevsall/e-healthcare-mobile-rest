@@ -8,7 +8,9 @@ import com.ehealthcaremanagement.repositories.DoctorRepository;
 import com.ehealthcaremanagement.repositories.SpecialityRepository;
 import com.ehealthcaremanagement.repositories.UserRepository;
 import com.ehealthcaremanagement.services.DoctorAnalysisService;
+import com.ehealthcaremanagement.services.EmailSenderService;
 import com.ehealthcaremanagement.services.FindModel;
+import com.ehealthcaremanagement.services.PassGenerator;
 import com.ehealthcaremanagement.utilities.RegistrationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +41,16 @@ public class ManageDocController {
     private SpecialityRepository specialityRepository;
     @Autowired
     private DoctorAnalysisService doctorAnalysisService;
+    @Autowired
+    private EmailSenderService emailService;
 
     private final Logger logger = LoggerFactory.getLogger(ManageDocController.class);
 
     @RequestMapping(value = "/doctor", method = RequestMethod.POST)
     public @ResponseBody DoctorModel searchDoctorModel(@RequestBody DoctorModel doctorModel, HttpServletResponse response) {
         UserModel user = doctorModel.getUserId();
-        user.setPassword(user.getUsername() + user.getPhoneNumber().substring(0, 5) + "@");
+        String password = PassGenerator.generatePassword();
+        user.setPassword(password);
         RegistrationUtil registrationUtil = new RegistrationUtil(user, passwordEncoder, userRepository, null);
         registrationUtil.validateDetails();
         boolean status = registrationUtil.saveUser("ROLE_DOC", true, true);
@@ -60,6 +65,15 @@ public class ManageDocController {
                 specialitiesModel.setDoctorNumber(specialitiesModel.getDoctorNumber() + 1);
                 specialityRepository.save(specialitiesModel);
                 doctorModel = findModel.findDoctorModel(user.getUsername());
+
+                emailService.sendWelcomeMail(
+                        user.getEmail(),
+                        user.getFirstName() + " " + user.getLastName(),
+                        user.getUsername(),
+                        password,
+                        true,
+                        true
+                );
                 return doctorModel;
             } catch (Exception e) {
                 logger.error(e.getMessage());

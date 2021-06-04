@@ -44,8 +44,8 @@
         }
 
         p {
-            font-family: "Times New Roman",serif;
-            font-size: 18px;
+            font-family: "Arial",serif;
+            font-size: 16px;
             color: #16697aee;
         }
 
@@ -63,8 +63,22 @@
         <img src="https://firebasestorage.googleapis.com/v0/b/e-healthcare-78554.appspot.com/o/logo.png?alt=media&token=67e47d1e-7008-4286-b470-69de0c651e7e" alt="Logo">
     </div>
     <div class="content">
-        <p>Welcome to e-Healthcare, <span th:text="${name}"></span>!. We are excited to have you on board.</p>
-        <p>Your username is <b th:text="${username}"></b></p>
+        <p>
+            Welcome to e-Healthcare,
+            <span th:if="${doctor}">Dr. </span>
+            <span th:text="${name}"></span>!.
+            We are excited to have you on board.
+        </p>
+        <p>
+            Your username is: <b th:text="${username}"></b><br>
+            <span th:if="${defaultPass}">
+                Your Password is: <b th:text="${password}"></b>
+            </span>
+        </p>
+        <p th:if="${defaultPass}">
+            This is a default password. Use this to login to your account and make sure to change your
+            password on your first login.
+        </p>
     </div>
     <div class="footer">
         <p>For any queries, mail us at: <a href="mailto:ehealthcare8278@gmail.com"><i>e-Healthcare</i></a></p>
