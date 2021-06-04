@@ -3,12 +3,15 @@ package com.ehealthcaremanagement.controllers.manager;
 import com.ehealthcaremanagement.repositories.AppointmentRepository;
 import com.ehealthcaremanagement.repositories.RoomRepository;
 import com.ehealthcaremanagement.repositories.UserRepository;
+import com.ehealthcaremanagement.services.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -25,10 +28,17 @@ public class ManagerAnalysisController {
     private RoomRepository roomRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailSenderService emailService;
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public @ResponseBody Map<Character, Long> testMethod() {
-        return new HashMap<>();
+    public @ResponseBody String testMethod() {
+        try {
+            emailService.sendWelcomeMail("ehealthcare8278338@gmail.com", "Vasudev", "vasudevsall");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Cannot send mail");
+        }
+        return "Mail Sent";
     }
 
     @RequestMapping(value = "/room/beds", method = RequestMethod.GET)

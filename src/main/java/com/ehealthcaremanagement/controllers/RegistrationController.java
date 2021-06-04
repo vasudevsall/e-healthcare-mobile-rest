@@ -3,7 +3,10 @@ package com.ehealthcaremanagement.controllers;
 import com.ehealthcaremanagement.models.custom.PasswordChangeModel;
 import com.ehealthcaremanagement.models.repository.UserModel;
 import com.ehealthcaremanagement.repositories.UserRepository;
+import com.ehealthcaremanagement.services.EmailSenderService;
 import com.ehealthcaremanagement.utilities.RegistrationUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -24,12 +27,23 @@ public class RegistrationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailSenderService emailService;
+
+    private final Logger logger= LoggerFactory.getLogger(RegistrationController.class);
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public @ResponseBody String newUser(@RequestBody UserModel user, HttpServletResponse response) {
         RegistrationUtil registrationUtil = new RegistrationUtil(user, passwordEncoder, userRepository, null);
         registrationUtil.validateDetails();
         boolean status = registrationUtil.saveUser("ROLE_USER", true, true);
         if(status) {
+            try {
+                emailService.sendWelcomeMail(user.getEmail(), user.getFirstName(), user.getUsername());
+            } catch (Exception e) {
+                logger.error("Unable to send mail on registration username: " + user.getEmail());
+                logger.error(e.getMessage());
+            }
             return "Registration success";
         } else{
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
