@@ -101,11 +101,17 @@
       </tr>
       <tr>
         <td>Appointment Slot: </td>
-        <td th:text="${appointment.slot == 'M'}?'Morning':'Afternoon'"></td>
+        <td>
+          <span th:if="${appointment.slot == 'M'}">Morning</span>
+          <span th:unless="${appointment.slot == 'M'}">Afternoon</span>
+        </td>
       </tr>
       <tr>
         <td>Appointment Type: </td>
-        <td th:text="${appointment.type == 'O'}?'Offline':'Video'"></td>
+        <td>
+          <span th:if="${appointment.type == 'O'}">Offline</span>
+          <span th:unless="${appointment.type == 'O'}">Video</span>
+        </td>
       </tr>
       <tr th:if="${isTokenGeneration}">
         <td>Token Number: </td>

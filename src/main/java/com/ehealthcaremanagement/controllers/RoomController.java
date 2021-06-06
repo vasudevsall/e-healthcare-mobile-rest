@@ -96,8 +96,15 @@ public class RoomController {
         Optional<AdmissionModel> admissionModelOptional = admissionRepository.findById(id);
         if(admissionModelOptional.isPresent()) {
             AdmissionModel admissionModel = admissionModelOptional.get();
+            // Discharge the patient
             admissionModel.setDischarge(LocalDate.now());
 
+            // Increase the number of available rooms
+            RoomModel roomModel = admissionModel.getRoom();
+            roomModel.setBeds(roomModel.getBeds() + 1);
+            roomRepository.save(roomModel);
+
+            // Calculate Bill and return details
             LocalDate admit = admissionModel.getAdmit();
             Period period = Period.between(admit, LocalDate.now());
             int days = period.getDays() + 1;

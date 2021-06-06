@@ -47,7 +47,7 @@ public class StocksController {
     ) {
         if(name.isEmpty())
             return productRepository.findAll();
-        return productRepository.findAllByNameLike(name.get());
+        return productRepository.findAllByNameContaining(name.get());
     }
 
     @RequestMapping(method = RequestMethod.POST)
