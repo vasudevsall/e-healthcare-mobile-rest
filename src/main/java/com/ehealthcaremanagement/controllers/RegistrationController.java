@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -99,6 +100,30 @@ public class RegistrationController {
                     "Cannot generate OTP at the moment, please try again later");
         }
         return "OTP has been mailed to you, please check your mail.";
+    }
+
+    @RequestMapping(value = "/register/verify/otp", method = RequestMethod.POST)
+    public @ResponseBody String verifyOtp(@RequestParam(name = "username") String username,
+            @RequestBody long otp) {
+        UserModel userModel = findModel.findUserModel(username);
+        Optional<OtpModel> otpModelOptional =
+                otpRepository.findByUserAndTimeAfter(userModel, LocalDateTime.now().minusMinutes(5));
+        if(otpModelOptional.isPresent()) {
+            OtpModel otpModel = otpModelOptional.get();
+
+            if(otp == otpModel.getPassword()) {
+                long newOtp = PassGenerator.generateOtp();
+                otpModel.setPassword(newOtp);
+                otpModel.setTime(LocalDateTime.now());
+
+                otpRepository.save(otpModel);
+                return Long.toString(newOtp);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP did not match");
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please generate new OTP");
+        }
     }
 
     @RequestMapping(value = "register/forgot", method = RequestMethod.POST)
