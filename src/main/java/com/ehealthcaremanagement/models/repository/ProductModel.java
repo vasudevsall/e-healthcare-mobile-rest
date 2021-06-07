@@ -1,5 +1,6 @@
 package com.ehealthcaremanagement.models.repository;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -12,6 +13,7 @@ public class ProductModel {
     private long id;
     private String name;
     private String composition;
+    @Column(name = "`use`")
     private long use; // Number of average units used per week
     private long weeks; // Number of weeks for above average
 
