@@ -57,12 +57,12 @@ public class AppointmentValidationUtil {
         LocalDateTime currentTime = LocalDateTime.now();
         Period period = Period.between(LocalDate.now(), date);
         if(slot == 'M') {
-            if(period.isZero() && currentTime.getHour() > 7) {
+            if(period.isZero() && currentTime.getHour() > 11) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sorry, slot booking for this slot are closed," +
                         "\n Please visit healthcare facility for any emergencies");
             }
         }
-        if(period.isZero() && currentTime.getHour() > 12) {
+        if(period.isZero() && currentTime.getHour() > 14) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sorry, slot booking for this slot are closed," +
                     "\n Please visit healthcare facility for any emergencies");
         }
